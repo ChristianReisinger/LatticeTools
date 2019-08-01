@@ -10,6 +10,8 @@
 
 class LinkPath {
 
+public:
+
 	double path[SUN_elems];
 
 	LinkPath(double* gauge_field, int T, int L, const std::array<int, 4>& n);
