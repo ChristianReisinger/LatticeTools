@@ -8,10 +8,12 @@
 #include <array>
 #include <global_defs.hh>
 
+#ifndef INCLUDE_LINKPATH_HH_
+#define INCLUDE_LINKPATH_HH_
+
 class LinkPath {
 
 public:
-
 	double path[SUN_elems];
 
 	LinkPath(double* gauge_field, int T, int L, const std::array<int, 4>& n);
@@ -25,3 +27,5 @@ private:
 	int T, L;
 	std::array<int, 4> n;
 };
+
+#endif /* INCLUDE_LINKPATH_HH_ */
