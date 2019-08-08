@@ -15,7 +15,7 @@
 
 #include <linear_algebra.hh>
 
-LinkPath::LinkPath(double* gauge_field, int T, int L, const std::array<int, 4>& n) :
+LinkPath::LinkPath(const double* gauge_field, int T, int L, const std::array<int, 4>& n) :
 		gauge_field(gauge_field), T(T), L(L), n(n) {
 	cm_eq_id(path);
 }
