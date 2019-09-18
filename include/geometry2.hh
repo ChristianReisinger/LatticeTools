@@ -1,10 +1,3 @@
-/*
- * geometry2.hh
- *
- *  Created on: 31 Jul 2019
- *      Author: reisinger
- */
-
 #include <vector>
 #include <geometry.hh>
 #include <global_defs.hh>
@@ -12,13 +5,17 @@
 #ifndef INCLUDE_GEOMETRY2_HH_
 #define INCLUDE_GEOMETRY2_HH_
 
+namespace de_uni_frankfurt_itp {
+namespace reisinger {
+namespace latticetools_0719 {
+
 /**
  * @param n lattice position {t,x,y,z}
  * @param T
  * @param L
  */
 inline unsigned long int get_index(const std::vector<int>& n, const int T, const int L) {
-	return get_index(n[0], n[1], n[2], n[3], T, L);
+	return ::get_index(n[0], n[1], n[2], n[3], T, L);
 }
 
 /**
@@ -28,7 +25,7 @@ inline unsigned long int get_index(const std::vector<int>& n, const int T, const
  * @return superindex of SU(N) matrices on the lattice with n matrices on each lattice site
  */
 inline unsigned long int ggi_n(const int (&p)[4], const int n, const int i, const int T, const int L) {
-	return (n * get_index(p[0], p[1], p[2], p[3], T, L) + i) * (unsigned long int) SUN_elems;
+	return (n * ::get_index(p[0], p[1], p[2], p[3], T, L) + i) * (unsigned long int) SUN_elems;
 }
 
 /**
@@ -42,8 +39,11 @@ inline unsigned long int ggi_n(const int (&p)[4], const int n, const int i, cons
  */
 inline unsigned long int ggi_n(const int t, const int x, const int y, const int z, const int n, const int i, const int T,
 		const int L) {
-	return (n * get_index(t, x, y, z, T, L) + i) * (unsigned long int) SUN_elems;
+	return (n * ::get_index(t, x, y, z, T, L) + i) * (unsigned long int) SUN_elems;
 }
 
+}
+}
+}
 
 #endif /* INCLUDE_GEOMETRY2_HH_ */

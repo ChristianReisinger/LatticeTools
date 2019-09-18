@@ -9,13 +9,13 @@ SRC_DIR=src/
 INCLUDE_DIR=include/
 
 OBJ_NAMES=LinkPath
-BIN_NAMES=
+BIN_NAMES=composite_gauge_field_SU2
 
 OBJS=${OBJ_NAMES:%=${BUILD_DIR}/%.o}
 TARGETS=${BIN_NAMES:%=${BIN_DIR}/%}
 LIBS=
 
-all: ${OBJS}
+all: ${OBJS} ${TARGETS}
 
 ${TARGETS}: ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${OBJS}
 	readarray deps < <(depfinder.sh . $< includes_SU2 libs_SU2);\

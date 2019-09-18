@@ -1,10 +1,3 @@
-/*
- * LinkPath.cc
- *
- *  Created on: 31 Jul 2019
- *      Author: reisinger
- */
-
 #include <LinkPath.hh>
 
 #include <array>
@@ -14,6 +7,10 @@
 #include <geometry2.hh>
 
 #include <linear_algebra.hh>
+
+namespace de_uni_frankfurt_itp {
+namespace reisinger {
+namespace latticetools_0719 {
 
 LinkPath::LinkPath(const double* gauge_field, int T, int L, const std::array<int, 4>& n) :
 		gauge_field(gauge_field), T(T), L(L), n(n) {
@@ -44,3 +41,6 @@ LinkPath& LinkPath::reset(const std::array<int, 4>& new_n) {
 	return *this;
 }
 
+}
+}
+}

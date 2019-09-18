@@ -1,15 +1,12 @@
-/*
- * LinkPath.cc
- *
- *  Created on: 31 Jul 2019
- *      Author: reisinger
- */
-
 #include <array>
 #include <global_defs.hh>
 
 #ifndef INCLUDE_LINKPATH_HH_
 #define INCLUDE_LINKPATH_HH_
+
+namespace de_uni_frankfurt_itp {
+namespace reisinger {
+namespace latticetools_0719 {
 
 class LinkPath {
 
@@ -27,5 +24,9 @@ private:
 	int T, L;
 	std::array<int, 4> n;
 };
+
+}
+}
+}
 
 #endif /* INCLUDE_LINKPATH_HH_ */
