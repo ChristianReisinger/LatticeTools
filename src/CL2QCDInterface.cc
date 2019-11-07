@@ -33,7 +33,7 @@ CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, int overrelax_steps) :
 			*m_prng);
 }
 
-void CL2QCDInterface::do_sweep(double* const config_buf, int T, int L, double beta, const std::set<int>& fixed_timeslices) const {
+void CL2QCDInterface::do_sweep(double* config_buf, int T, int L, double beta, const std::set<int>& fixed_timeslices) const {
 	if(T != m_gaugefield->getParameters()->getNt() || L != m_gaugefield->getParameters()->getNs()
 			|| m_gaugefield->getParameters()->getBeta() != beta)
 		throw std::invalid_argument("CL2QCDInterface::do_sweep invalid T / L / beta");
@@ -44,12 +44,12 @@ void CL2QCDInterface::do_sweep(double* const config_buf, int T, int L, double be
 }
 
 
-void CL2QCDInterface::write_gauge_field(const double* const config_buf, const std::string& config_filename, int T, int L,
+void CL2QCDInterface::write_gauge_field(const double* config_buf, const std::string& config_filename, int T, int L,
 			const std::string& header) const {
 	throw std::logic_error("CL2QCDInterface::write_gauge_field not implemented");
 }
 
-void CL2QCDInterface::read_gauge_field(double* const config_buf, const std::string& config_filename, int T, int L) const {
+void CL2QCDInterface::read_gauge_field(double* config_buf, const std::string& config_filename, int T, int L) const {
 	throw std::logic_error("CL2QCDInterface::read_gauge_field not implemented");
 }
 
