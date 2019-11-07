@@ -22,18 +22,6 @@ public:
 			const std::string& header) const = 0;
 
 	virtual void read_gauge_field(double* config_buf, const std::string& config_filename, int T, int L) const = 0;
-
-	inline void Gauge_Field_Alloc(double*& gauge_field, int T, int L) const {
-		gauge_field = new double[T * L * L * L * 4 * SUN_elems];
-	}
-
-	inline void Gauge_Field_Free(double*& gauge_field) const {
-		delete[] gauge_field;
-	}
-
-	inline void Gauge_Field_Copy(const double* dest, const double* src, int T, int L) const {
-		std::copy(src, src + T * L * L * L * 4 * SUN_elems, dest);
-	}
 };
 
 }
