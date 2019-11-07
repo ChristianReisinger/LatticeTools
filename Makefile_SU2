@@ -8,7 +8,7 @@ BUILD_DIR=build/
 SRC_DIR=src/
 INCLUDE_DIR=include/
 
-OBJ_NAMES=LinkPath
+OBJ_NAMES=LinkPath HeatbathSU2Interface
 BIN_NAMES=composite_gauge_field_SU2
 
 OBJS=${OBJ_NAMES:%=${BUILD_DIR}/%.o}
