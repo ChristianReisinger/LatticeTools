@@ -31,7 +31,7 @@ public:
 		delete[] gauge_field;
 	}
 
-	inline void Gauge_Field_Copy(const double*& dest, const double* src, int T, int L) const {
+	inline void Gauge_Field_Copy(const double* dest, const double* src, int T, int L) const {
 		std::copy(src, src + T * L * L * L * 4 * SUN_elems, dest);
 	}
 };
