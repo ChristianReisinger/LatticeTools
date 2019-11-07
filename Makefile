@@ -8,7 +8,7 @@ BUILD_DIR=build/
 SRC_DIR=src/
 INCLUDE_DIR=include/
 
-OBJ_NAMES=LinkPath
+OBJ_NAMES=LinkPath CL2QCDInterface
 BIN_NAMES=
 
 OBJS=${OBJ_NAMES:%=${BUILD_DIR}/%.o}
