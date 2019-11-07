@@ -9,7 +9,7 @@
 #include <physics/prng.hpp>
 #include <physics/lattices/gaugefield.hpp>
 
-#include <HeatbathInterface.hh>
+#include <SUNInterface.hh>
 
 #ifndef INCLUDE_DE_UNI_FRANKFURT_ITP_REISINGER_LATTICETOOLS_0719_CL2QCDINTERFACE_HH_
 #define INCLUDE_DE_UNI_FRANKFURT_ITP_REISINGER_LATTICETOOLS_0719_CL2QCDINTERFACE_HH_
@@ -18,7 +18,7 @@ namespace de_uni_frankfurt_itp {
 namespace reisinger {
 namespace latticetools_0719 {
 
-class CL2QCDInterface: public HeatbathInterface {
+class CL2QCDInterface: public SUNInterface {
 public:
 	CL2QCDInterface(int T, int L, int seed, int overrelax_steps);
 	CL2QCDInterface(const CL2QCDInterface&) = delete;
