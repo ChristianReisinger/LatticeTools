@@ -1,6 +1,8 @@
 #include <set>
 #include <string>
 
+#include <global_defs.hh>
+
 #ifndef INCLUDE_DE_UNI_FRANKFURT_ITP_REISINGER_LATTICETOOLS_0719_SUNINTERFACE_HH_
 #define INCLUDE_DE_UNI_FRANKFURT_ITP_REISINGER_LATTICETOOLS_0719_SUNINTERFACE_HH_
 
@@ -19,6 +21,14 @@ public:
 			const std::string& header) const = 0;
 
 	virtual void read_gauge_field(double* config_buf, const std::string& config_filename, int T, int L) const = 0;
+
+	inline void Gauge_Field_Alloc(double*& gauge_field, int T, int L) {
+		gauge_field = new double[T * L * L * L * 4 * SUN_elems];
+	}
+
+	inline void Gauge_Field_Free(double*& gauge_field) {
+		delete[] gauge_field;
+	}
 };
 
 }
