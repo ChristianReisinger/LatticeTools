@@ -8,7 +8,7 @@ BUILD_DIR=build/
 SRC_DIR=src/
 INCLUDE_DIR=include/
 
-OBJ_NAMES=LinkPath HeatbathSU2Interface
+OBJ_NAMES=LinkPath MCSU2Interface
 BIN_NAMES=composite_gauge_field_SU2
 
 OBJS=${OBJ_NAMES:%=${BUILD_DIR}/%.o}
@@ -17,11 +17,11 @@ LIBS=
 
 all: ${OBJS} ${TARGETS}
 
-${TARGETS}: ${BIN_DIR}/%: ${SRC_DIR}/%.cc ${OBJS}
+${TARGETS}: ${BIN_DIR}/%: ${SRC_DIR}/%.cc
 	readarray deps < <(depfinder.sh . $< includes_SU2 libs_SU2);\
 	${CXX} ${CXXFLAGS} -o $@ $^ -I"${INCLUDE_DIR}" "$${deps[@]}" ${LIBS}
 	
-${OBJS}: ${BUILD_DIR}/%.o: ${SRC_DIR}/%.cc  ${INCLUDE_DIR}/%.hh
+${OBJS}: ${BUILD_DIR}/%.o: ${SRC_DIR}/%.cc ${INCLUDE_DIR}/%.hh
 	readarray deps < <(depfinder.sh . $< includes_SU2 libs_SU2);\
 	${CXX} ${CXXFLAGS} -c -o $@ $< -I"${INCLUDE_DIR}" "$${deps[@]}"
 
