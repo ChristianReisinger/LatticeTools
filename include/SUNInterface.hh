@@ -1,5 +1,6 @@
 #include <set>
 #include <string>
+#include <algorithm>
 
 #include <global_defs.hh>
 
@@ -28,6 +29,10 @@ public:
 
 	inline void Gauge_Field_Free(double*& gauge_field) {
 		delete[] gauge_field;
+	}
+
+	inline void Gauge_Field_Copy(const double*& dest, const double* src, int T, int L) {
+		std::copy(src, src + T * L * L * L * 4 * SUN_elems, dest);
 	}
 };
 
