@@ -43,6 +43,16 @@ void CL2QCDInterface::do_sweep(double* const config_buf, int T, int L, double be
 	m_gaugefield->copyGaugefieldToContractionCodeArray(config_buf);
 }
 
+
+void CL2QCDInterface::write_gauge_field(const double* const config_buf, const std::string& config_filename, int T, int L,
+			const std::string& header) const {
+	throw std::logic_error("CL2QCDInterface::write_gauge_field not implemented");
+}
+
+void CL2QCDInterface::read_gauge_field(double* const config_buf, const std::string& config_filename, int T, int L) const {
+	throw std::logic_error("CL2QCDInterface::read_gauge_field not implemented");
+}
+
 }
 }
 }
