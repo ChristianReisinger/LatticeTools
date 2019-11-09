@@ -9,13 +9,14 @@ namespace de_uni_frankfurt_itp {
 namespace reisinger {
 namespace latticetools_0719 {
 
-CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, int overrelax_steps) :
+CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overrelax_steps) :
 		m_params(std::string("")
 				+ " --useGPU 0"
-				+ " --nSpace " + L
-				+ " --nTime " + T
-				+ " --hostSeed " + seed,
-				5, "su3heatbath"), m_overrelax_steps(overrelax_steps) {
+				+ " --nSpace " + std::to_string(L) +
+				+" --nTime " + std::to_string(T) +
+				+" --hostSeed " + std::to_string(seed) +
+				+" --beta " + std::to_string(beta),
+				6, "su3heatbath"), m_overrelax_steps(overrelax_steps) {
 
 	m_prng_params = new physics::PrngParametersImplementation(m_params);
 
@@ -33,24 +34,28 @@ CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, int overrelax_steps) :
 			*m_prng);
 }
 
-void CL2QCDInterface::do_sweep(double* config_buf, int T, int L, double beta, const std::set<int>& fixed_timeslices) const {
-	if(T != m_gaugefield->getParameters()->getNt() || L != m_gaugefield->getParameters()->getNs()
-			|| m_gaugefield->getParameters()->getBeta() != beta)
-		throw std::invalid_argument("CL2QCDInterface::do_sweep invalid T / L / beta");
-
+void CL2QCDInterface::do_sweep(double* config_buf, const std::set<int>& fixed_timeslices) const {
 	physics::algorithms::su3heatbath(*m_gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
-
 	m_gaugefield->copyGaugefieldToContractionCodeArray(config_buf);
 }
 
-
-void CL2QCDInterface::write_gauge_field(const double* config_buf, const std::string& config_filename, int T, int L,
-			const std::string& header) const {
+void CL2QCDInterface::write_gauge_field(const double* config_buf, const std::string& config_filename,
+		const std::string& header) const {
 	throw std::logic_error("CL2QCDInterface::write_gauge_field not implemented");
 }
 
-void CL2QCDInterface::read_gauge_field(double* config_buf, const std::string& config_filename, int T, int L) const {
+void CL2QCDInterface::read_gauge_field(double* config_buf, const std::string& config_filename) const {
 	throw std::logic_error("CL2QCDInterface::read_gauge_field not implemented");
+}
+
+int CL2QCDInterface::get_T() const {
+	return m_gaugefield->getParameters()->getNt();
+}
+int CL2QCDInterface::get_L() const {
+	return m_gaugefield->getParameters()->getNs();
+}
+double CL2QCDInterface::get_beta() const {
+	return m_gaugefield->getParameters()->getBeta();
 }
 
 }

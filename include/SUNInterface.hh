@@ -15,13 +15,17 @@ class SUNInterface {
 public:
 	virtual ~SUNInterface() = default;
 
-	virtual void do_sweep(double* const config_buf, int T, int L, double beta,
+	virtual void do_sweep(double* const config_buf,
 			const std::set<int>& fixed_timeslices = std::set<int>()) const = 0;
 
-	virtual void write_gauge_field(const double* config_buf, const std::string& config_filename, int T, int L,
+	virtual void write_gauge_field(const double* config_buf, const std::string& config_filename,
 			const std::string& header) const = 0;
 
-	virtual void read_gauge_field(double* config_buf, const std::string& config_filename, int T, int L) const = 0;
+	virtual void read_gauge_field(double* config_buf, const std::string& config_filename) const = 0;
+
+	virtual int get_T() const = 0;
+	virtual int get_L() const = 0;
+	virtual double get_beta() const = 0;
 };
 
 }

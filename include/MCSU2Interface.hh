@@ -11,13 +11,27 @@ namespace latticetools_0719 {
 
 class MCSU2Interface: public SUNInterface {
 public:
-	void do_sweep(double* config_buf, int T, int L, double beta,
+	MCSU2Interface(int T, int L, int seed, double beta);
+	MCSU2Interface(const MCSU2Interface&) = delete;
+	MCSU2Interface(MCSU2Interface&&) = delete;
+	MCSU2Interface& operator=(const MCSU2Interface&) = delete;
+	MCSU2Interface& operator=(MCSU2Interface&&) = delete;
+
+	void do_sweep(double* config_buf,
 			const std::set<int>& fixed_timeslices = std::set<int>()) const override;
 
-	void write_gauge_field(const double* config_buf, const std::string& config_filename, int T, int L,
+	void write_gauge_field(const double* config_buf, const std::string& config_filename,
 				const std::string& header) const override;
 
-	void read_gauge_field(double* config_buf, const std::string& config_filename, int T, int L) const override;
+	void read_gauge_field(double* config_buf, const std::string& config_filename) const override;
+
+	int get_T() const override;
+	int get_L() const override;
+	double get_beta() const override;
+
+private:
+	const int m_T, m_L;
+	const double m_beta;
 };
 
 }
