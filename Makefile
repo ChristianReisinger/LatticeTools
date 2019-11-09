@@ -4,7 +4,7 @@ CXX=g++
 CXXFLAGS=-std=c++11 -O3
 
 BIN_DIR=bin/
-BUILD_DIR=build/
+BUILD_DIR=lib/
 SRC_DIR=src/
 INCLUDE_DIR=include/
 
