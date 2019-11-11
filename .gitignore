@@ -2,7 +2,7 @@
 .cproject
 .settings/
 bin/
-build/
+lib/
 includes
 libs
 includes_SU2
