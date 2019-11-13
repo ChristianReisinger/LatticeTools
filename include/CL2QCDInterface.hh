@@ -2,11 +2,11 @@
 #include <memory>
 
 #include <meta/inputparameters.hpp>
-#include <interfaceImplementations/hardwareParameters.hpp>
-#include <interfaceImplementations/openClKernelParameters.hpp>
+#include <hardware/hardwareParameters.hpp>
+#include <hardware/openClKernelParameters.hpp>
 #include <hardware/system.hpp>
-#include <interfaceImplementations/interfacesHandler.hpp>
-#include <physics/prng.hpp>
+#include <physics/interfacesHandler.hpp>
+#include <physics/prngInterface.hpp>
 #include <physics/lattices/gaugefield.hpp>
 
 #include <SUNInterface.hh>
@@ -41,10 +41,10 @@ public:
 private:
 	const int m_overrelax_steps;
 
-	meta::Inputparameters m_params;
-	std::unique_ptr<const hardware::HardwareParametersImplementation> m_hardware_params;
-	std::unique_ptr<const hardware::code::OpenClKernelParametersImplementation> m_kernel_params;
-	std::unique_ptr<physics::PrngParametersImplementation> m_prng_params;
+	std::unique_ptr<meta::Inputparameters> m_params;
+	std::unique_ptr<const hardware::HardwareParametersInterface> m_hardware_params;
+	std::unique_ptr<const hardware::code::OpenClKernelParametersInterface> m_kernel_params;
+	std::unique_ptr<physics::PrngParametersInterface> m_prng_params;
 	std::unique_ptr<hardware::System> m_system;
 	std::unique_ptr<physics::PRNG> m_prng;
 
