@@ -3,7 +3,4 @@
 .settings/
 bin/
 lib/
-includes
-libs
-includes_SU2
-libs_SU2
+build/
