@@ -41,7 +41,7 @@ public:
 private:
 	const int m_overrelax_steps;
 
-	meta::Inputparameters m_params;
+	std::unique_ptr<meta::Inputparameters> m_params;
 	std::unique_ptr<const hardware::HardwareParametersImplementation> m_hardware_params;
 	std::unique_ptr<const hardware::code::OpenClKernelParametersImplementation> m_kernel_params;
 	std::unique_ptr<physics::PrngParametersImplementation> m_prng_params;

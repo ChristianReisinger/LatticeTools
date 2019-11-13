@@ -10,24 +10,27 @@ namespace reisinger {
 namespace latticetools_0719 {
 
 CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overrelax_steps) :
-		m_params(std::string("")
-				+ " --useGPU 0"
-				+ " --nSpace " + std::to_string(L) +
-				+" --nTime " + std::to_string(T) +
-				+" --hostSeed " + std::to_string(seed) +
-				+" --beta " + std::to_string(beta),
-				6, "su3heatbath"), m_overrelax_steps(overrelax_steps) {
+		m_overrelax_steps(overrelax_steps) {
 
-	m_prng_params = new physics::PrngParametersImplementation(m_params);
+	char* params_argv[] = { "dummy_bin_path",
+			"--useGPU", "0",
+			"--nSpace", std::to_string(L).c_str(),
+			"--nTime", std::to_string(T).c_str(),
+			"--hostSeed", std::to_string(seed).c_str(),
+			"--beta", std::to_string(beta).c_str()
+	};
+	m_params = new meta::Inputparameters(11, params_argv, "su3heatbath");
 
-	m_hardware_params = new hardware::HardwareParametersImplementation(&m_params);
-	m_kernel_params = new hardware::code::OpenClKernelParametersImplementation(m_params);
+	m_prng_params = new physics::PrngParametersImplementation(*m_params);
+
+	m_hardware_params = new hardware::HardwareParametersImplementation(m_params.get());
+	m_kernel_params = new hardware::code::OpenClKernelParametersImplementation(*m_params);
 	m_system = new hardware::System(*m_hardware_params, *m_kernel_params);
 
 	m_prng = new physics::PRNG(*m_system, m_prng_params);
 
 	m_interfaces_handler = std::unique_ptr<physics::InterfacesHandler>(
-			new physics::InterfacesHandlerImplementation { m_params });
+			new physics::InterfacesHandlerImplementation { *m_params });
 
 	m_gaugefield = new physics::lattices::Gaugefield(*m_system,
 			&(m_interfaces_handler->getInterface<physics::lattices::Gaugefield>()),
