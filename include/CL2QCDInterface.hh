@@ -17,6 +17,7 @@ public:
 	CL2QCDInterface(CL2QCDInterface&&) = delete;
 	CL2QCDInterface& operator=(const CL2QCDInterface&) = delete;
 	CL2QCDInterface& operator=(CL2QCDInterface&&) = delete;
+	~CL2QCDInterface();
 
 	void do_sweep(double* config_buf,
 			const std::set<int>& fixed_timeslices = std::set<int>()) const override;

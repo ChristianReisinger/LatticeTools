@@ -78,6 +78,8 @@ CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overre
 		impl { tools::helper::make_unique<Implementation>(T, L, seed, beta, overrelax_steps) } {
 }
 
+CL2QCDInterface::~CL2QCDInterface() = default;
+
 void CL2QCDInterface::do_sweep(double* config_buf, const std::set<int>& fixed_timeslices) const {
 	impl->do_sweep(config_buf, fixed_timeslices);
 }
