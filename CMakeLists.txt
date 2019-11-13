@@ -17,6 +17,7 @@ elseif(NC EQUAL 3)
 	)
 	set(INTERFACE_TARGET CL2QCDInterface)
 	set(SUN_INCLUDE
+		"${Tools_ROOT}/include"
 		"${CL2QCD_ROOT}"
 		"${SU3_ROOT}"
 	)
