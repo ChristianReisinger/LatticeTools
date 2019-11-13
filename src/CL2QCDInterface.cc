@@ -12,7 +12,7 @@ namespace latticetools_0719 {
 CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overrelax_steps) :
 		m_overrelax_steps(overrelax_steps) {
 
-	char* params_argv[] = { "dummy_bin_path",
+	const char* params_argv[] = { "dummy_bin_path",
 			"--useGPU", "0",
 			"--nSpace", std::to_string(L).c_str(),
 			"--nTime", std::to_string(T).c_str(),
