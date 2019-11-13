@@ -1,7 +1,13 @@
 #include <string>
 #include <stdexcept>
 
+#include <helper_functions.hh>
 #include <physics/algorithms/su3heatbath.hpp>
+#include <physics/prng.hpp>
+#include <interfaceImplementations/physicsParameters.hpp>
+#include <interfaceImplementations/hardwareParameters.hpp>
+#include <interfaceImplementations/openClKernelParameters.hpp>
+#include <interfaceImplementations/interfacesHandler.hpp>
 
 #include <CL2QCDInterface.hh>
 
@@ -11,6 +17,7 @@ namespace latticetools_0719 {
 
 CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overrelax_steps) :
 		m_overrelax_steps(overrelax_steps) {
+	using tools::helper::make_unique;
 
 	const char* params_argv[] = { "dummy_bin_path",
 			"--useGPU", "0",
@@ -19,20 +26,19 @@ CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overre
 			"--hostSeed", std::to_string(seed).c_str(),
 			"--beta", std::to_string(beta).c_str()
 	};
-	m_params = new meta::Inputparameters(11, params_argv, "su3heatbath");
+	m_params = make_unique<meta::Inputparameters>(11, params_argv, "su3heatbath");
 
-	m_prng_params = new physics::PrngParametersImplementation(*m_params);
+	m_prng_params = make_unique<physics::PrngParametersImplementation>(*m_params);
 
-	m_hardware_params = new hardware::HardwareParametersImplementation(m_params.get());
-	m_kernel_params = new hardware::code::OpenClKernelParametersImplementation(*m_params);
-	m_system = new hardware::System(*m_hardware_params, *m_kernel_params);
+	m_hardware_params = make_unique<hardware::HardwareParametersImplementation>(m_params.get());
+	m_kernel_params = make_unique<hardware::code::OpenClKernelParametersImplementation>(*m_params);
+	m_system = make_unique<hardware::System>(*m_hardware_params, *m_kernel_params);
 
-	m_prng = new physics::PRNG(*m_system, m_prng_params);
+	m_prng = make_unique<physics::PRNG>(*m_system, m_prng_params.get());
 
-	m_interfaces_handler = std::unique_ptr<physics::InterfacesHandler>(
-			new physics::InterfacesHandlerImplementation { *m_params });
+	m_interfaces_handler = make_unique<physics::InterfacesHandlerImplementation>(*m_params);
 
-	m_gaugefield = new physics::lattices::Gaugefield(*m_system,
+	m_gaugefield = make_unique<physics::lattices::Gaugefield>(*m_system,
 			&(m_interfaces_handler->getInterface<physics::lattices::Gaugefield>()),
 			*m_prng);
 }
