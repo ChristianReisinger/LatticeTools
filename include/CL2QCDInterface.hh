@@ -1,14 +1,6 @@
 #include <set>
 #include <memory>
 
-#include <meta/inputparameters.hpp>
-#include <interfaceImplementations/hardwareParameters.hpp>
-#include <interfaceImplementations/openClKernelParameters.hpp>
-#include <hardware/system.hpp>
-#include <interfaceImplementations/interfacesHandler.hpp>
-#include <physics/prng.hpp>
-#include <physics/lattices/gaugefield.hpp>
-
 #include <SUNInterface.hh>
 
 #ifndef INCLUDE_DE_UNI_FRANKFURT_ITP_REISINGER_LATTICETOOLS_0719_CL2QCDINTERFACE_HH_
@@ -25,6 +17,7 @@ public:
 	CL2QCDInterface(CL2QCDInterface&&) = delete;
 	CL2QCDInterface& operator=(const CL2QCDInterface&) = delete;
 	CL2QCDInterface& operator=(CL2QCDInterface&&) = delete;
+	~CL2QCDInterface();
 
 	void do_sweep(double* config_buf,
 			const std::set<int>& fixed_timeslices = std::set<int>()) const override;
@@ -39,17 +32,8 @@ public:
 	double get_beta() const override;
 
 private:
-	const int m_overrelax_steps;
-
-	meta::Inputparameters m_params;
-	std::unique_ptr<const hardware::HardwareParametersImplementation> m_hardware_params;
-	std::unique_ptr<const hardware::code::OpenClKernelParametersImplementation> m_kernel_params;
-	std::unique_ptr<physics::PrngParametersImplementation> m_prng_params;
-	std::unique_ptr<hardware::System> m_system;
-	std::unique_ptr<physics::PRNG> m_prng;
-
-	std::unique_ptr<physics::InterfacesHandler> m_interfaces_handler;
-	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
+	class Implementation;
+	std:: unique_ptr<Implementation> impl;
 };
 
 }
