@@ -24,7 +24,7 @@ public:
 	void set(const double* gauge_field) override;
 	void read(const std::string& config_filename) override;
 
-	void write(const std::string& config_filename, const std::string& header) const override;
+	void write(const std::string& config_filename) const override;
 	int get_T() const override;
 	int get_L() const override;
 	double get_beta() const override;

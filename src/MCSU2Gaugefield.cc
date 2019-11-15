@@ -14,7 +14,7 @@ namespace reisinger {
 namespace latticetools_0719 {
 
 MCSU2Gaugefield::MCSU2Gaugefield(int T, int L, int seed, double beta, std::string filename) :
-		m_T(T), m_L(L), m_beta(beta) {
+		m_T(T), m_L(L), m_seed(seed), m_beta(beta) {
 	InitializeRand(seed);
 	Gauge_Field_Alloc(m_gaugefield_buf, T, L);
 	read(filename.c_str());
@@ -36,7 +36,12 @@ void MCSU2Gaugefield::read(const std::string& config_filename) {
 	::read_gauge_field(m_gaugefield_buf, config_filename.c_str(), m_T, m_L);
 }
 
-void MCSU2Gaugefield::write(const std::string& config_filename, const std::string& header) const {
+void MCSU2Gaugefield::write(const std::string& config_filename) const {
+	std::string header("MCSU2Gaugefield "
+			+ std::to_string(m_beta) + " "
+			+ std::to_string(m_T) + " "
+			+ std::to_string(m_L) + " "
+			+ std::to_string(m_seed) + " ");
 	::write_gauge_field(m_gaugefield_buf, config_filename.c_str(), m_T, m_L, header.c_str());
 }
 
