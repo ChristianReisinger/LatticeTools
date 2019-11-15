@@ -17,13 +17,15 @@
 #include <interfaceImplementations/openClKernelParameters.hpp>
 #include <interfaceImplementations/interfacesHandler.hpp>
 
-#include <CL2QCDInterface.hh>
+#include <global_defs.hh>
+
+#include <CL2QCDGaugefield.hh>
 
 namespace de_uni_frankfurt_itp {
 namespace reisinger {
 namespace latticetools_0719 {
 
-class CL2QCDInterface::Implementation {
+class CL2QCDGaugefield::Implementation {
 public:
 	Implementation(int T, int L, int seed, double beta, int overrelax_steps) :
 			m_overrelax_steps(overrelax_steps) {
@@ -48,18 +50,38 @@ public:
 
 		m_interfaces_handler = make_unique<physics::InterfacesHandlerImplementation>(*m_params);
 
-		gaugefield = make_unique<physics::lattices::Gaugefield>(*m_system,
+		m_gaugefield = make_unique<physics::lattices::Gaugefield>(*m_system,
 				&(m_interfaces_handler->getInterface<physics::lattices::Gaugefield>()),
 				*m_prng);
 
 	}
-
-	void do_sweep(double* config_buf, const std::set<int>& fixed_timeslices) const {
-		physics::algorithms::su3heatbath(*gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
-		gaugefield->copyGaugefieldToContractionCodeArray(config_buf);
+	~Implementation() {
+		if (m_contractioncode_gaugefield_buf != nullptr)
+			Gauge_Field_Free(m_contractioncode_gaugefield_buf);
 	}
 
-	std::unique_ptr<physics::lattices::Gaugefield> gaugefield;
+	void do_sweep(const std::set<int>& fixed_timeslices) const {
+		physics::algorithms::su3heatbath(*m_gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
+	}
+
+	const int get_T() const {
+		return impl->m_gaugefield->getParameters()->getNt();
+	}
+
+	const int get_L() const {
+		return impl->m_gaugefield->getParameters()->getNs();
+	}
+
+	const int get_beta() const {
+		return impl->m_gaugefield->getParameters()->getBeta();
+	}
+
+	const double* get_buffer() {
+		if (m_contractioncode_gaugefield_buf == nullptr)
+			Gauge_Field_Alloc(m_contractioncode_gaugefield_buf, get_T(), get_L());
+		m_gaugefield->copyGaugefieldToContractionCodeArray(m_contractioncode_gaugefield_buf);
+		return m_contractioncode_gaugefield_buf;
+	}
 
 private:
 	const int m_overrelax_steps;
@@ -72,35 +94,41 @@ private:
 	std::unique_ptr<physics::PRNG> m_prng;
 
 	std::unique_ptr<physics::InterfacesHandler> m_interfaces_handler;
+
+	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
+	double* m_contractioncode_gaugefield_buf = nullptr;
 };
 
-CL2QCDInterface::CL2QCDInterface(int T, int L, int seed, double beta, int overrelax_steps) :
+CL2QCDGaugefield::CL2QCDGaugefield(int T, int L, int seed, double beta, int overrelax_steps) :
 		impl { tools::helper::make_unique<Implementation>(T, L, seed, beta, overrelax_steps) } {
 }
 
-CL2QCDInterface::~CL2QCDInterface() = default;
+CL2QCDGaugefield::~CL2QCDGaugefield() = default;
 
-void CL2QCDInterface::do_sweep(double* config_buf, const std::set<int>& fixed_timeslices) const {
-	impl->do_sweep(config_buf, fixed_timeslices);
+void CL2QCDGaugefield::do_sweep(const std::set<int>& fixed_timeslices) const {
+	impl->do_sweep(fixed_timeslices);
 }
 
-void CL2QCDInterface::write_gauge_field(const double* config_buf, const std::string& config_filename,
-		const std::string& header) const {
+void CL2QCDGaugefield::write(const std::string& config_filename, const std::string& header) const {
 	throw std::logic_error("CL2QCDInterface::write_gauge_field not implemented");
 }
 
-void CL2QCDInterface::read_gauge_field(double* config_buf, const std::string& config_filename) const {
+void CL2QCDGaugefield::read(const std::string& config_filename) const {
 	throw std::logic_error("CL2QCDInterface::read_gauge_field not implemented");
 }
 
-int CL2QCDInterface::get_T() const {
-	return impl->gaugefield->getParameters()->getNt();
+int CL2QCDGaugefield::get_T() const {
+	return impl->get_T();
 }
-int CL2QCDInterface::get_L() const {
-	return impl->gaugefield->getParameters()->getNs();
+int CL2QCDGaugefield::get_L() const {
+	return impl->get_L();
 }
-double CL2QCDInterface::get_beta() const {
-	return impl->gaugefield->getParameters()->getBeta();
+double CL2QCDGaugefield::get_beta() const {
+	return impl->get_beta();
+}
+
+const double* CL2QCDGaugefield::get_buffer() const {
+	return impl->get_buffer();
 }
 
 }
