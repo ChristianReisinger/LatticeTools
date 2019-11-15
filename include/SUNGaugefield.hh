@@ -19,7 +19,7 @@ public:
 	virtual void set(const double* gauge_field) = 0;
 	virtual void read(const std::string& config_filename) = 0;
 
-	virtual void write(const std::string& config_filename, const std::string& header) const = 0;
+	virtual void write(const std::string& config_filename) const = 0;
 	virtual int get_T() const = 0;
 	virtual int get_L() const = 0;
 	virtual double get_beta() const = 0;

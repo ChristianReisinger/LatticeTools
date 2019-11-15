@@ -65,22 +65,34 @@ public:
 		physics::algorithms::su3heatbath(*m_gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
 	}
 
+	void set(const double* gauge_field) {
+		m_gaugefield->setToContractionCodeArray(gauge_field);
+	}
+
+	void read(std::string filename) {
+		m_gaugefield->readFromILDGSourcefile(filename);
+	}
+
+	void write(std::string filename) const {
+		m_gaugefield->save(filename, 0);
+	}
+
 	const int get_T() const {
-		return impl->m_gaugefield->getParameters()->getNt();
+		return m_gaugefield->getParameters()->getNt();
 	}
 
 	const int get_L() const {
-		return impl->m_gaugefield->getParameters()->getNs();
+		return m_gaugefield->getParameters()->getNs();
 	}
 
 	const int get_beta() const {
-		return impl->m_gaugefield->getParameters()->getBeta();
+		return m_gaugefield->getParameters()->getBeta();
 	}
 
 	const double* get_buffer() {
 		if (m_contractioncode_gaugefield_buf == nullptr)
 			Gauge_Field_Alloc(m_contractioncode_gaugefield_buf, get_T(), get_L());
-		m_gaugefield->copyGaugefieldToContractionCodeArray(m_contractioncode_gaugefield_buf);
+		m_gaugefield->copyToContractionCodeArray(m_contractioncode_gaugefield_buf);
 		return m_contractioncode_gaugefield_buf;
 	}
 
@@ -111,15 +123,15 @@ void CL2QCDGaugefield::do_sweep(const std::set<int>& fixed_timeslices) {
 }
 
 void CL2QCDGaugefield::set(const double* gauge_field) {
-	throw std::logic_error(std::string(__PRETTY_FUNCTION__) + " not implemented");
+	impl->set(gauge_field);
 }
 
 void CL2QCDGaugefield::read(const std::string& config_filename) {
-	throw std::logic_error(std::string(__PRETTY_FUNCTION__) + " not implemented");
+	impl->read(config_filename);
 }
 
-void CL2QCDGaugefield::write(const std::string& config_filename, const std::string& header) const {
-	throw std::logic_error(std::string(__PRETTY_FUNCTION__) + " not implemented");
+void CL2QCDGaugefield::write(const std::string& config_filename) const {
+	impl->write(config_filename);
 }
 
 int CL2QCDGaugefield::get_T() const {

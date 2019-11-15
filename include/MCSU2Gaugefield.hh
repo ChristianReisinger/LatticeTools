@@ -23,7 +23,7 @@ public:
 	void set(const double* gauge_field) override;
 	void read(const std::string& config_filename) override;
 
-	void write(const std::string& config_filename, const std::string& header) const override;
+	void write(const std::string& config_filename) const override;
 	int get_T() const override;
 	int get_L() const override;
 	double get_beta() const override;
@@ -31,7 +31,7 @@ public:
 
 private:
 	double* m_gaugefield_buf;
-	const int m_T, m_L;
+	const int m_T, m_L, m_seed;
 	const double m_beta;
 };
 
