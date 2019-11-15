@@ -144,7 +144,7 @@ double CL2QCDGaugefield::get_beta() const {
 	return impl->get_beta();
 }
 
-const double* CL2QCDGaugefield::get_buffer() const {
+const double* CL2QCDGaugefield::get() const {
 	return impl->get_buffer();
 }
 

@@ -27,7 +27,7 @@ public:
 	int get_T() const override;
 	int get_L() const override;
 	double get_beta() const override;
-	const double* get_buffer() const override;
+	const double* get() const override;
 
 private:
 	double* m_gaugefield_buf;

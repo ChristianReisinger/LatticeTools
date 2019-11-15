@@ -55,7 +55,7 @@ double MCSU2Gaugefield::get_beta() const {
 	return m_beta;
 }
 
-const double* MCSU2Gaugefield::get_buffer() const {
+const double* MCSU2Gaugefield::get() const {
 	return m_gaugefield_buf;
 }
 
