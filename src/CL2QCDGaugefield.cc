@@ -27,7 +27,7 @@ namespace latticetools_0719 {
 
 class CL2QCDGaugefield::Implementation {
 public:
-	Implementation(int T, int L, int seed, double beta, int overrelax_steps) :
+	Implementation(int T, int L, int seed, double beta, int overrelax_steps, std::string filename) :
 			m_overrelax_steps(overrelax_steps) {
 		using tools::helper::make_unique;
 
@@ -36,9 +36,11 @@ public:
 				"--nSpace", std::to_string(L).c_str(),
 				"--nTime", std::to_string(T).c_str(),
 				"--hostSeed", std::to_string(seed).c_str(),
-				"--beta", std::to_string(beta).c_str()
+				"--beta", std::to_string(beta).c_str(),
+				"--startCondition", "continue",
+				"--initialConf", filename.c_str()
 		};
-		m_params = make_unique<meta::Inputparameters>(11, params_argv, "su3heatbath");
+		m_params = make_unique<meta::Inputparameters>(15, params_argv, "su3heatbath");
 
 		m_prng_params = make_unique<physics::PrngParametersImplementation>(*m_params);
 
@@ -53,7 +55,6 @@ public:
 		m_gaugefield = make_unique<physics::lattices::Gaugefield>(*m_system,
 				&(m_interfaces_handler->getInterface<physics::lattices::Gaugefield>()),
 				*m_prng);
-
 	}
 	~Implementation() {
 		if (m_contractioncode_gaugefield_buf != nullptr)
@@ -99,22 +100,26 @@ private:
 	double* m_contractioncode_gaugefield_buf = nullptr;
 };
 
-CL2QCDGaugefield::CL2QCDGaugefield(int T, int L, int seed, double beta, int overrelax_steps) :
-		impl { tools::helper::make_unique<Implementation>(T, L, seed, beta, overrelax_steps) } {
+CL2QCDGaugefield::CL2QCDGaugefield(int T, int L, int seed, double beta, int overrelax_steps, std::string filename) :
+		impl { tools::helper::make_unique<Implementation>(T, L, seed, beta, overrelax_steps, filename) } {
 }
 
 CL2QCDGaugefield::~CL2QCDGaugefield() = default;
 
-void CL2QCDGaugefield::do_sweep(const std::set<int>& fixed_timeslices) const {
+void CL2QCDGaugefield::do_sweep(const std::set<int>& fixed_timeslices) {
 	impl->do_sweep(fixed_timeslices);
 }
 
-void CL2QCDGaugefield::write(const std::string& config_filename, const std::string& header) const {
-	throw std::logic_error("CL2QCDInterface::write_gauge_field not implemented");
+void CL2QCDGaugefield::set(const double* gauge_field) {
+	throw std::logic_error(std::string(__PRETTY_FUNCTION__) + " not implemented");
 }
 
-void CL2QCDGaugefield::read(const std::string& config_filename) const {
-	throw std::logic_error("CL2QCDInterface::read_gauge_field not implemented");
+void CL2QCDGaugefield::read(const std::string& config_filename) {
+	throw std::logic_error(std::string(__PRETTY_FUNCTION__) + " not implemented");
+}
+
+void CL2QCDGaugefield::write(const std::string& config_filename, const std::string& header) const {
+	throw std::logic_error(std::string(__PRETTY_FUNCTION__) + " not implemented");
 }
 
 int CL2QCDGaugefield::get_T() const {

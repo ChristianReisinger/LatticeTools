@@ -15,12 +15,11 @@ class SUNGaugefield {
 public:
 	virtual ~SUNGaugefield() = default;
 
-	virtual void do_sweep(const std::set<int>& fixed_timeslices = std::set<int>()) const = 0;
+	virtual void do_sweep(const std::set<int>& fixed_timeslices = std::set<int>()) = 0;
+	virtual void set(const double* gauge_field) = 0;
+	virtual void read(const std::string& config_filename) = 0;
 
 	virtual void write(const std::string& config_filename, const std::string& header) const = 0;
-
-	virtual void read(const std::string& config_filename) const = 0;
-
 	virtual int get_T() const = 0;
 	virtual int get_L() const = 0;
 	virtual double get_beta() const = 0;

@@ -1,4 +1,5 @@
 #include <set>
+#include <string>
 
 #include <heatbath.hh>
 #include <io.hh>
@@ -12,26 +13,31 @@ namespace de_uni_frankfurt_itp {
 namespace reisinger {
 namespace latticetools_0719 {
 
-MCSU2Gaugefield::MCSU2Gaugefield(int T, int L, int seed, double beta) :
+MCSU2Gaugefield::MCSU2Gaugefield(int T, int L, int seed, double beta, std::string filename) :
 		m_T(T), m_L(L), m_beta(beta) {
 	InitializeRand(seed);
 	Gauge_Field_Alloc(m_gaugefield_buf, T, L);
+	read(filename.c_str());
 }
 
 MCSU2Gaugefield::~MCSU2Gaugefield() {
 	Gauge_Field_Free(m_gaugefield_buf);
 }
 
-void MCSU2Gaugefield::do_sweep(const std::set<int>& fixed_timeslices) const {
+void MCSU2Gaugefield::do_sweep(const std::set<int>& fixed_timeslices) {
 	::do_sweep(m_gaugefield_buf, m_T, m_L, m_beta, fixed_timeslices);
+}
+
+void MCSU2Gaugefield::set(const double* gauge_field) {
+	Gauge_Field_Copy(m_gaugefield_buf, gauge_field, m_T, m_L);
+}
+
+void MCSU2Gaugefield::read(const std::string& config_filename) {
+	::read_gauge_field(m_gaugefield_buf, config_filename.c_str(), m_T, m_L);
 }
 
 void MCSU2Gaugefield::write(const std::string& config_filename, const std::string& header) const {
 	::write_gauge_field(m_gaugefield_buf, config_filename.c_str(), m_T, m_L, header.c_str());
-}
-
-void MCSU2Gaugefield::read(const std::string& config_filename) const {
-	::read_gauge_field(m_gaugefield_buf, config_filename.c_str(), m_T, m_L);
 }
 
 int MCSU2Gaugefield::get_T() const {
