@@ -26,6 +26,14 @@ namespace reisinger {
 namespace latticetools_0719 {
 
 class CL2QCDGaugefield::Implementation {
+private:
+	void free_buf() {
+		if (m_contractioncode_gaugefield_buf != nullptr) {
+			Gauge_Field_Free(m_contractioncode_gaugefield_buf);
+			m_contractioncode_gaugefield_buf = nullptr;
+		}
+	}
+
 public:
 	Implementation(int T, int L, int seed, double beta, int overrelax_steps, std::string filename) :
 			m_overrelax_steps(overrelax_steps) {
@@ -57,19 +65,21 @@ public:
 				*m_prng);
 	}
 	~Implementation() {
-		if (m_contractioncode_gaugefield_buf != nullptr)
-			Gauge_Field_Free(m_contractioncode_gaugefield_buf);
+		free_buf();
 	}
 
-	void do_sweep(const std::set<int>& fixed_timeslices) const {
+	void do_sweep(const std::set<int>& fixed_timeslices) {
+		free_buf();
 		physics::algorithms::su3heatbath(*m_gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
 	}
 
 	void set(const double* gauge_field) {
+		free_buf();
 		m_gaugefield->setToContractionCodeArray(gauge_field);
 	}
 
 	void read(std::string filename) {
+		free_buf();
 		m_gaugefield->readFromILDGSourcefile(filename);
 	}
 
@@ -90,9 +100,10 @@ public:
 	}
 
 	const double* get_buffer() {
-		if (m_contractioncode_gaugefield_buf == nullptr)
+		if (m_contractioncode_gaugefield_buf == nullptr) {
 			Gauge_Field_Alloc(m_contractioncode_gaugefield_buf, get_T(), get_L());
-		m_gaugefield->copyToContractionCodeArray(m_contractioncode_gaugefield_buf);
+			m_gaugefield->copyToContractionCodeArray(m_contractioncode_gaugefield_buf);
+		}
 		return m_contractioncode_gaugefield_buf;
 	}
 
