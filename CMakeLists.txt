@@ -5,6 +5,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++11")
 
 set(NC 2 CACHE STRING "number of colors for SU(NC)")
 
+add_definitions(-D__SUN_N__=${NC})
+
 if(NC EQUAL 2)
 	add_library(MCSU2Gaugefield src/MCSU2Gaugefield.cc)
 	set(INTERFACE_TARGET MCSU2Gaugefield)
