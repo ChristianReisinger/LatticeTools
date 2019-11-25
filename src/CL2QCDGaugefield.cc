@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <stdexcept>
 #include <memory>
 
@@ -39,16 +40,19 @@ public:
 			m_overrelax_steps(overrelax_steps) {
 		using tools::helper::make_unique;
 
-		const char* params_argv[] = { "dummy_bin_path",
+		const std::vector<std::string> params_args = { "dummy_bin_path",
 				"--useGPU", "0",
-				"--nSpace", std::to_string(L).c_str(),
-				"--nTime", std::to_string(T).c_str(),
-				"--hostSeed", std::to_string(seed).c_str(),
-				"--beta", std::to_string(beta).c_str(),
+				"--nSpace", std::to_string(L),
+				"--nTime", std::to_string(T),
+				"--hostSeed", std::to_string(seed),
+				"--beta", std::to_string(beta),
 				"--startCondition", "continue",
-				"--initialConf", filename.c_str()
+				"--initialConf", filename
 		};
-		m_params = make_unique<meta::Inputparameters>(15, params_argv, "su3heatbath");
+		std::vector<const char*> params_argv;
+		for (const auto& arg : params_args)
+			params_argv.push_back(arg.data());
+		m_params = make_unique<meta::Inputparameters>(params_argv.size(), params_argv.data(), "su3heatbath");
 
 		m_prng_params = make_unique<physics::PrngParametersImplementation>(*m_params);
 
