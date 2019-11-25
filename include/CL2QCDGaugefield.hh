@@ -2,6 +2,20 @@
 #include <memory>
 #include <string>
 
+#include <meta/inputparameters.hpp>
+#include <hardware/hardwareParameters.hpp>
+#include <hardware/openClKernelParameters.hpp>
+#include <hardware/system.hpp>
+#include <physics/interfacesHandler.hpp>
+#include <physics/prngInterface.hpp>
+#include <physics/lattices/gaugefield.hpp>
+#include <physics/algorithms/su3heatbath.hpp>
+#include <physics/prng.hpp>
+#include <interfaceImplementations/physicsParameters.hpp>
+#include <interfaceImplementations/hardwareParameters.hpp>
+#include <interfaceImplementations/openClKernelParameters.hpp>
+#include <interfaceImplementations/interfacesHandler.hpp>
+
 #include <SUNGaugefield.hh>
 
 #ifndef INCLUDE_DE_UNI_FRANKFURT_ITP_REISINGER_LATTICETOOLS_0719_CL2QCDGAUGEFIELD_HH_
@@ -28,11 +42,24 @@ public:
 	int get_T() const override;
 	int get_L() const override;
 	double get_beta() const override;
-	const double* get() const override;
+	const double* get() override;
 
 private:
-	class Implementation;
-	std:: unique_ptr<Implementation> impl;
+	void free_buf();
+
+	const int m_overrelax_steps;
+
+	std::unique_ptr<meta::Inputparameters> m_params;
+	std::unique_ptr<const hardware::HardwareParametersInterface> m_hardware_params;
+	std::unique_ptr<const hardware::code::OpenClKernelParametersInterface> m_kernel_params;
+	std::unique_ptr<physics::PrngParametersInterface> m_prng_params;
+	std::unique_ptr<hardware::System> m_system;
+	std::unique_ptr<physics::PRNG> m_prng;
+
+	std::unique_ptr<physics::InterfacesHandler> m_interfaces_handler;
+
+	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
+	double* m_contractioncode_gaugefield_buf = nullptr;
 };
 
 }
