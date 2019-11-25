@@ -23,7 +23,7 @@ public:
 	virtual int get_T() const = 0;
 	virtual int get_L() const = 0;
 	virtual double get_beta() const = 0;
-	virtual const double* get() const = 0;
+	virtual const double* get() = 0;
 };
 
 }
