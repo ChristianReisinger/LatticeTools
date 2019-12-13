@@ -1,6 +1,19 @@
 #!/bin/bash
 
-cmake_defines="$(cat dependencies | sed -r 's/^/-D/' | tr '\n' ' ')"
+depends_template="\
+Tools_ROOT=
+SU2_ROOT=
+SU3_ROOT=
+CL2QCD_ROOT="
+
+if [ -s dependencies ]; then
+	cmake_defines="$(cat dependencies | sed -r 's/^/-D/' | tr '\n' ' ')"
+else
+	echo -ne "$depends_template" > dependencies
+	echo "dependencies not set .. creating template"
+	exit
+fi
+
 (cd build
 
 if [ "${1,,}" == su2 ]; then

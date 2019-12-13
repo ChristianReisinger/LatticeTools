@@ -5,17 +5,19 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++11")
 
 set(NC 2 CACHE STRING "number of colors for SU(NC)")
 
+add_definitions(-D__SUN_N__=${NC})
+
 if(NC EQUAL 2)
-	add_library(MCSU2Interface src/MCSU2Interface.cc)
-	set(INTERFACE_TARGET MCSU2Interface)
+	add_library(MCSU2Gaugefield src/MCSU2Gaugefield.cc)
+	set(INTERFACE_TARGET MCSU2Gaugefield)
 	set(SUN_INCLUDE "${SU2_ROOT}")
 elseif(NC EQUAL 3)
-	add_library(CL2QCDInterface src/CL2QCDInterface.cc)
-	target_compile_definitions(CL2QCDInterface PUBLIC
+	add_library(CL2QCDGaugefield src/CL2QCDGaugefield.cc)
+	target_compile_definitions(CL2QCDGaugefield PUBLIC
 		USE_PRNG_RANLUX
 		LOG_LEVEL=OFF
 	)
-	set(INTERFACE_TARGET CL2QCDInterface)
+	set(INTERFACE_TARGET CL2QCDGaugefield)
 	set(SUN_INCLUDE
 		"${Tools_ROOT}/include"
 		"${CL2QCD_ROOT}"
