@@ -152,7 +152,9 @@ private:
 	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
 	double* m_contractioncode_gaugefield_buf = nullptr;
 
-	std::chrono::steady_clock::duration m_time_spent_sweeping, m_time_spent_reading, m_time_spent_writing, m_time_spent_converting;
+	std::chrono::steady_clock::duration m_time_spent_sweeping, m_time_spent_reading, m_time_spent_converting;
+	mutable std::chrono::steady_clock::duration m_time_spent_writing;
+
 };
 
 CL2QCDGaugefield::CL2QCDGaugefield(int T, int L, int seed, double beta, int overrelax_steps, std::string filename) :
