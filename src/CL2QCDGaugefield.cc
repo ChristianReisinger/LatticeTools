@@ -152,8 +152,8 @@ private:
 	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
 	double* m_contractioncode_gaugefield_buf = nullptr;
 
-	std::chrono::steady_clock::duration m_time_spent_sweeping, m_time_spent_reading, m_time_spent_converting;
-	mutable std::chrono::steady_clock::duration m_time_spent_writing;
+	std::chrono::steady_clock::duration m_time_spent_sweeping { 0 }, m_time_spent_reading { 0 }, m_time_spent_converting { 0 };
+	mutable std::chrono::steady_clock::duration m_time_spent_writing { 0 };
 
 };
 
