@@ -47,7 +47,7 @@ private:
 		};
 		for (const auto& name_time : measured_times)
 			std::cout << "\t" << name_time.first << ":\t"
-					<< std::chrono::duration_cast<std::chrono::seconds>(*(name_time.second)).count() << "\n";
+					<< std::chrono::duration_cast<std::chrono::milliseconds>(*(name_time.second)).count() << " ms\n";
 	}
 
 public:
