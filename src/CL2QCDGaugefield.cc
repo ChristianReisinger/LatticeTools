@@ -62,7 +62,8 @@ public:
 				"--hostSeed", std::to_string(seed),
 				"--beta", std::to_string(beta),
 				"--startCondition", "continue",
-				"--initialConf", filename
+				"--initialConf", filename,
+				"--logLevel", "ERROR"
 		};
 		std::vector<const char*> params_argv;
 		for (const auto& arg : params_args)
