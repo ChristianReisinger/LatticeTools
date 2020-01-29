@@ -92,19 +92,19 @@ public:
 
 	void do_sweep(const std::set<int>& fixed_timeslices) {
 		auto start_time = std::chrono::steady_clock::now();
-		free_buf();
+		m_contractioncode_gaugefield_needs_refresh = true;
 		physics::algorithms::su3heatbath(*m_gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
 		m_time_spent_sweeping += std::chrono::steady_clock::now() - start_time;
 	}
 
 	void set(const double* gauge_field) {
-		free_buf();
+		m_contractioncode_gaugefield_needs_refresh = true;
 		m_gaugefield->setToContractionCodeArray(gauge_field);
 	}
 
 	void read(std::string filename) {
 		auto start_time = std::chrono::steady_clock::now();
-		free_buf();
+		m_contractioncode_gaugefield_needs_refresh = true;
 		m_gaugefield->readFromILDGSourcefile(filename);
 		m_time_spent_reading += std::chrono::steady_clock::now() - start_time;
 	}
@@ -129,10 +129,14 @@ public:
 
 	const double* get_buffer() {
 		auto start_time = std::chrono::steady_clock::now();
-		if (m_contractioncode_gaugefield_buf == nullptr) {
+		if (m_contractioncode_gaugefield_buf == nullptr)
 			Gauge_Field_Alloc(m_contractioncode_gaugefield_buf, get_T(), get_L());
+
+		if (m_contractioncode_gaugefield_needs_refresh) {
 			m_gaugefield->copyToContractionCodeArray(m_contractioncode_gaugefield_buf);
+			m_contractioncode_gaugefield_needs_refresh = false;
 		}
+
 		m_time_spent_converting += std::chrono::steady_clock::now() - start_time;
 		return m_contractioncode_gaugefield_buf;
 	}
@@ -151,6 +155,7 @@ private:
 
 	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
 	double* m_contractioncode_gaugefield_buf = nullptr;
+	bool m_contractioncode_gaugefield_needs_refresh = true;
 
 	std::chrono::steady_clock::duration m_time_spent_sweeping { 0 }, m_time_spent_reading { 0 }, m_time_spent_converting { 0 };
 	mutable std::chrono::steady_clock::duration m_time_spent_writing { 0 };
