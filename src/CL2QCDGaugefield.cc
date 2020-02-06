@@ -2,6 +2,8 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
+#include <chrono>
+#include <iostream>
 
 #include <helper_functions.hh>
 #include <meta/inputparameters.hpp>
@@ -35,6 +37,19 @@ private:
 		}
 	}
 
+	void print_time_spent() const {
+		std::cout << "Time spent in CL2QCDGaugefield:\n";
+		const std::map<std::string, const std::chrono::steady_clock::duration*> measured_times = {
+				{ "reading", &m_time_spent_reading },
+				{ "writing", &m_time_spent_writing },
+				{ "converting", &m_time_spent_converting },
+				{ "sweeping", &m_time_spent_sweeping }
+		};
+		for (const auto& name_time : measured_times)
+			std::cout << "\t" << name_time.first << ":\t"
+					<< std::chrono::duration_cast<std::chrono::milliseconds>(*(name_time.second)).count() << " ms\n";
+	}
+
 public:
 	Implementation(int T, int L, int seed, double beta, int overrelax_steps, std::string filename) :
 			m_overrelax_steps(overrelax_steps) {
@@ -47,7 +62,8 @@ public:
 				"--hostSeed", std::to_string(seed),
 				"--beta", std::to_string(beta),
 				"--startCondition", "continue",
-				"--initialConf", filename
+				"--initialConf", filename,
+				"--logLevel", "ERROR"
 		};
 		std::vector<const char*> params_argv;
 		for (const auto& arg : params_args)
@@ -68,27 +84,35 @@ public:
 				&(m_interfaces_handler->getInterface<physics::lattices::Gaugefield>()),
 				*m_prng);
 	}
+
 	~Implementation() {
 		free_buf();
+		print_time_spent();
 	}
 
 	void do_sweep(const std::set<int>& fixed_timeslices) {
-		free_buf();
+		auto start_time = std::chrono::steady_clock::now();
+		m_contractioncode_gaugefield_needs_refresh = true;
 		physics::algorithms::su3heatbath(*m_gaugefield, *m_prng, m_overrelax_steps, fixed_timeslices);
+		m_time_spent_sweeping += std::chrono::steady_clock::now() - start_time;
 	}
 
 	void set(const double* gauge_field) {
-		free_buf();
+		m_contractioncode_gaugefield_needs_refresh = true;
 		m_gaugefield->setToContractionCodeArray(gauge_field);
 	}
 
 	void read(std::string filename) {
-		free_buf();
+		auto start_time = std::chrono::steady_clock::now();
+		m_contractioncode_gaugefield_needs_refresh = true;
 		m_gaugefield->readFromILDGSourcefile(filename);
+		m_time_spent_reading += std::chrono::steady_clock::now() - start_time;
 	}
 
 	void write(std::string filename) const {
+		auto start_time = std::chrono::steady_clock::now();
 		m_gaugefield->save(filename, 0);
+		m_time_spent_writing += std::chrono::steady_clock::now() - start_time;
 	}
 
 	const int get_T() const {
@@ -104,10 +128,16 @@ public:
 	}
 
 	const double* get_buffer() {
-		if (m_contractioncode_gaugefield_buf == nullptr) {
+		auto start_time = std::chrono::steady_clock::now();
+		if (m_contractioncode_gaugefield_buf == nullptr)
 			Gauge_Field_Alloc(m_contractioncode_gaugefield_buf, get_T(), get_L());
+
+		if (m_contractioncode_gaugefield_needs_refresh) {
 			m_gaugefield->copyToContractionCodeArray(m_contractioncode_gaugefield_buf);
+			m_contractioncode_gaugefield_needs_refresh = false;
 		}
+
+		m_time_spent_converting += std::chrono::steady_clock::now() - start_time;
 		return m_contractioncode_gaugefield_buf;
 	}
 
@@ -125,6 +155,11 @@ private:
 
 	std::unique_ptr<physics::lattices::Gaugefield> m_gaugefield;
 	double* m_contractioncode_gaugefield_buf = nullptr;
+	bool m_contractioncode_gaugefield_needs_refresh = true;
+
+	std::chrono::steady_clock::duration m_time_spent_sweeping { 0 }, m_time_spent_reading { 0 }, m_time_spent_converting { 0 };
+	mutable std::chrono::steady_clock::duration m_time_spent_writing { 0 };
+
 };
 
 CL2QCDGaugefield::CL2QCDGaugefield(int T, int L, int seed, double beta, int overrelax_steps, std::string filename) :
