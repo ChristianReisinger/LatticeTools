@@ -90,7 +90,11 @@ lib_dir="$1"
 if [ "${1,,}" == su2 ]; then
 	cmake "${cmake_defines[@]}" ..
 elif [ "${1,,}" == su3 ]; then
-	cmake -DNC=3 "${cmake_defines[@]}" ..
+	if [ "${2,,}" == cc ]; then
+		cmake -DNC=3 -DUSECC=ON "${cmake_defines[@]}" ..
+	else
+		cmake -DNC=3 "${cmake_defines[@]}" ..
+	fi
 elif [ "$1" == clear ]; then
 	rm -rf ../build/* ../lib/* ../bin/*
 elif [ "$1" == clean ]; then
